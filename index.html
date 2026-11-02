@@ -318,14 +318,18 @@
         <!-- 時間長度預設調整 -->
         <fieldset class="settings-group">
           <legend>⏱️ 預設時間長度（分鐘）</legend>
-          <div class="form-grid">
+          <div class="form-grid-3">
             <div class="form-item">
               <label for="defaultExamTime">考試每節時間：</label>
               <input type="number" id="defaultExamTime" min="1" max="120" value="40"> 分鐘
             </div>
             <div class="form-item">
-              <label for="defaultBreakTime">下課休息時間：</label>
+              <label for="defaultBreakTime">一般下課時間：</label>
               <input type="number" id="defaultBreakTime" min="1" max="60" value="10"> 分鐘
+            </div>
+            <div class="form-item">
+              <label for="defaultBreak2Time">第二次下課 (大下課)：</label>
+              <input type="number" id="defaultBreak2Time" min="1" max="60" value="20"> 分鐘
             </div>
           </div>
         </fieldset>
@@ -495,6 +499,7 @@
                 <li>⏰ <strong>電子長鈴聲</strong>（連續長音鈴響）</li>
               </ul>
             </li>
+            <li><strong>作息時間彈性調整</strong>：每節考試時間（預設 40 分鐘）、一般下課時間（預設 10 分鐘）與<strong>第二次下課（課間大下課，預設 20 分鐘）</strong>均可自由自訂。</li>
             <li><strong>剩餘 5 分鐘提醒音</strong>：勾選後將在最後 5 分鐘時播放輕柔叮咚音，提醒學生檢查畫卡與姓名座號。</li>
             <li><strong>五大主題切換</strong>：
               <ul>

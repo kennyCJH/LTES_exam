@@ -856,6 +856,19 @@ body:fullscreen .digital-clock, body:-webkit-full-screen .digital-clock {
   margin-top: 0.6rem;
 }
 
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .form-item {
   display: flex;
   flex-direction: column;

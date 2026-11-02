@@ -99,6 +99,7 @@ const State = {
   settings: {
     examMinutes: 40,
     breakMinutes: 10,
+    break2Minutes: 20, // 第二次下課（課間大下課）
     autoNext: true,
     soundEnabled: true,
     fiveMinWarning: true,
@@ -291,6 +292,7 @@ const el = {
   volumeValue: document.getElementById("volumeValue"),
   defaultExamTime: document.getElementById("defaultExamTime"),
   defaultBreakTime: document.getElementById("defaultBreakTime"),
+  defaultBreak2Time: document.getElementById("defaultBreak2Time"),
   themeSelect: document.getElementById("themeSelect"),
   customHintText: document.getElementById("customHintText"),
   btnApplyHint: document.getElementById("btnApplyHint"),
@@ -311,6 +313,10 @@ function loadSettings() {
     } catch (e) {
       console.warn("無法解析設定", e);
     }
+  }
+
+  if (!State.settings.break2Minutes) {
+    State.settings.break2Minutes = 20;
   }
 
   // 載入標題設定
@@ -415,13 +421,20 @@ function buildPipeline(date, grade) {
 
     // 自動插入「下課休息」
     if (idx < rawSessions.length - 1) {
+      const isSecondBreak = (item.session === 2 || idx === 1);
+      const breakMinutes = isSecondBreak 
+        ? (State.settings.break2Minutes || 20) 
+        : (State.settings.breakMinutes || 10);
+
       pipeline.push({
         kind: "break",
         sessionNum: item.session,
-        sessionName: `第 ${item.session} 次下課`,
-        subject: "下課休息",
-        scope: "請至走廊活動放鬆、如廁或飲水，並準備下一節應考用品",
-        durationMinutes: State.settings.breakMinutes
+        sessionName: isSecondBreak ? `第 ${item.session} 次下課 (大下課)` : `第 ${item.session} 次下課`,
+        subject: isSecondBreak ? "大下課休息 (20分)" : "下課休息",
+        scope: isSecondBreak 
+          ? "課間大下課 20 分鐘：請至走廊戶外活動、護眼望遠或做操，放鬆身心！" 
+          : "請至走廊活動放鬆、如廁或飲水，並準備下一節應考用品",
+        durationMinutes: breakMinutes
       });
     }
   });
@@ -1034,6 +1047,7 @@ function initEventListeners() {
     el.volumeValue.textContent = `${Math.round(State.settings.soundVolume * 100)}%`;
     el.defaultExamTime.value = State.settings.examMinutes;
     el.defaultBreakTime.value = State.settings.breakMinutes;
+    el.defaultBreak2Time.value = State.settings.break2Minutes || 20;
     el.themeSelect.value = State.settings.theme;
     el.customHintText.value = State.settings.hintText;
 
@@ -1055,10 +1069,14 @@ function initEventListeners() {
     
     const newExamTime = parseInt(el.defaultExamTime.value, 10);
     const newBreakTime = parseInt(el.defaultBreakTime.value, 10);
-    const timeChanged = newExamTime !== State.settings.examMinutes || newBreakTime !== State.settings.breakMinutes;
+    const newBreak2Time = parseInt(el.defaultBreak2Time.value, 10) || 20;
+    const timeChanged = newExamTime !== State.settings.examMinutes || 
+                        newBreakTime !== State.settings.breakMinutes ||
+                        newBreak2Time !== State.settings.break2Minutes;
 
     State.settings.examMinutes = newExamTime;
     State.settings.breakMinutes = newBreakTime;
+    State.settings.break2Minutes = newBreak2Time;
     State.settings.theme = el.themeSelect.value;
     State.settings.hintText = el.customHintText.value;
 
